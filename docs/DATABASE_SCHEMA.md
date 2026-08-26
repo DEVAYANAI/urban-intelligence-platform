@@ -1,7 +1,3 @@
----
-
-# 📄 FILE 3 — `DATABASE_SCHEMA.md`
-
 ```markdown
 # Database Schema
 
@@ -113,3 +109,4 @@ Use SQLAlchemy for database interaction.
 Use Pydantic models for API validation.
 
 Do not introduce another database unless the team agrees.
+```

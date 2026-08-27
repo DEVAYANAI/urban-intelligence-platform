@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -6,6 +6,21 @@ function App() {
   const [videoPreview, setVideoPreview] = useState(null);
   const [traffic, setTraffic] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/traffic")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Backend request failed");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Backend traffic data:", data);
+      })
+      .catch((error) => {
+        console.error("Backend connection error:", error);
+      });
+  }, []);
 
   // Handle video selection
   const handleVideoChange = (event) => {
@@ -25,30 +40,40 @@ function App() {
 
   // Temporary analysis function
   // Later this will call your FastAPI backend
-  const handleAnalyze = () => {
+
+  const handleAnalyze = async () => {
     if (!selectedVideo) {
+      alert("Please select a video first.");
       return;
     }
 
     setIsAnalyzing(true);
-    setTraffic(null);
 
-    // Temporary delay to simulate AI processing
-    setTimeout(() => {
-      const aiResult = {
-        event_type: "traffic_density",
-        timestamp: "2026-08-26T22:02:34.304366",
-        cars: 1,
-        motorcycles: 4,
-        buses: 0,
-        trucks: 0,
-        total_vehicles: 5,
-        traffic_level: "LOW",
-      };
+    try {
+      const formData = new FormData();
 
-      setTraffic(aiResult);
+      formData.append("file", selectedVideo);
+
+      const response = await fetch("http://127.0.0.1:8000/analyze-video", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Video analysis failed");
+      }
+
+      const result = await response.json();
+
+      console.log("REAL AI RESULT:", result);
+
+      setTraffic(result);
+    } catch (error) {
+      console.error("Analysis error:", error);
+      alert("Video analysis failed. Check the backend terminal.");
+    } finally {
       setIsAnalyzing(false);
-    }, 1500);
+    }
   };
 
   return (

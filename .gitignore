@@ -9,11 +9,14 @@ ai/venv/
 # YOLO model files
 *.pt
 
-# YOLO generated output
+
+
+# Environment variables
+.env
+*.env
+
+
+
+# YOLO generated files
 runs/
 
-# Local traffic videos
-data/videos/
-
-# Temporary extracted test frame
-data/images/traffic1_first_frame.jpg

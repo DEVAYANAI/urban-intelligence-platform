@@ -1,45 +1,117 @@
 from ultralytics import YOLO
+from pathlib import Path
 
-# Load the pretrained YOLO model
-model = YOLO("yolo11n.pt")
 
-# Run YOLO on our image
-results = model("data/images/road.jpg", save=True)
+# ==========================================
+# 1. LOAD MODEL
+# ==========================================
 
-# Vehicle counters
-car_count = 0
-motorcycle_count = 0
-bus_count = 0
-truck_count = 0
+model = YOLO("yolo11s.pt")
 
-# Process the detection results
+
+# ==========================================
+# 2. IMAGE PATH
+# ==========================================
+
+image_path = "data/images/road2.jpg"
+
+
+# ==========================================
+# 3. RUN YOLO
+# ==========================================
+
+print()
+print("======================================")
+print("       AI VEHICLE DETECTION")
+print("======================================")
+print("Input image :", image_path)
+print("AI Status   : RUNNING...")
+print()
+
+
+results = model(
+    image_path,
+    conf=0.5,
+    classes=[2, 3, 5, 7],
+    save=True
+)
+
+
+# ==========================================
+# 4. COUNT VEHICLES
+# ==========================================
+
+cars = 0
+motorcycles = 0
+buses = 0
+trucks = 0
+
+
 for result in results:
 
-    # Go through every detected object
-    for box in result.boxes:
+    if result.boxes is not None:
 
-        # Get the detected object's class ID
-        class_id = int(box.cls[0])
+        class_ids = result.boxes.cls.int().cpu().tolist()
 
-        # Count the vehicles
-        if class_id == 2:
-            car_count += 1
+        for class_id in class_ids:
 
-        elif class_id == 3:
-            motorcycle_count += 1
+            if class_id == 2:
+                cars += 1
 
-        elif class_id == 5:
-            bus_count += 1
+            elif class_id == 3:
+                motorcycles += 1
 
-        elif class_id == 7:
-            truck_count += 1
+            elif class_id == 5:
+                buses += 1
+
+            elif class_id == 7:
+                trucks += 1
 
 
-# Display the result
+# ==========================================
+# 5. TOTAL
+# ==========================================
+
+total = cars + motorcycles + buses + trucks
+
+
+# ==========================================
+# 6. DISPLAY RESULT
+# ==========================================
+
+print("AI Status   : COMPLETED")
 print()
-print("========== TRAFFIC ANALYSIS ==========")
-print("Cars        :", car_count)
-print("Motorcycles :", motorcycle_count)
-print("Buses       :", bus_count)
-print("Trucks      :", truck_count)
+print("======================================")
+print("          DETECTION RESULT")
+print("======================================")
+print("Cars        :", cars)
+print("Motorcycles :", motorcycles)
+print("Buses       :", buses)
+print("Trucks      :", trucks)
+print("--------------------------------------")
+print("Total       :", total)
+print("======================================")
+
+
+# ==========================================
+# 7. OUTPUT LOCATION
+# ==========================================
+
+output_folder = Path("runs/detect")
+
+folders = sorted(
+    output_folder.glob("predict*"),
+    key=lambda x: x.stat().st_mtime,
+    reverse=True
+)
+
+if folders:
+    latest_folder = folders[0]
+    print()
+    print("Annotated image saved in:")
+    print(latest_folder)
+
+print()
+print("======================================")
+print("       IMAGE TEST FINISHED")
 print("======================================")

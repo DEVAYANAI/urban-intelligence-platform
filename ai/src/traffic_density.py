@@ -1,34 +1,58 @@
 from ultralytics import YOLO
+import json
+from datetime import datetime
 
-# Load YOLO model
+
+# ==========================================
+# 1. LOAD MODEL
+# ==========================================
+
 model = YOLO("yolo11s.pt")
 
-# Video
+
+# ==========================================
+# 2. VIDEO PATH
+# ==========================================
+
 video_path = "data/videos/traffic1.mp4"
 
-# Vehicle classes
-vehicle_classes = {
-    2: "car",
-    3: "motorcycle",
-    5: "bus",
-    7: "truck"
-}
 
-# Track the video
+# ==========================================
+# 3. TRACK + ANNOTATE VIDEO
+# ==========================================
+
+print()
+print("======================================")
+print("       AI TRAFFIC ANALYSIS")
+print("======================================")
+print("Input video :", video_path)
+print("AI Status   : RUNNING...")
+print()
+
 results = model.track(
     source=video_path,
     conf=0.5,
     tracker="bytetrack.yaml",
-    stream=True
+    stream=True,
+    save=True,
+    classes=[2, 3, 5, 7]
 )
 
-# Keep track of the maximum vehicles visible
+
+# ==========================================
+# 4. MAXIMUM VEHICLES
+# ==========================================
+
 max_cars = 0
 max_motorcycles = 0
 max_buses = 0
 max_trucks = 0
 
-# Process every frame
+
+# ==========================================
+# 5. PROCESS EVERY FRAME
+# ==========================================
+
 for result in results:
 
     cars = 0
@@ -54,14 +78,17 @@ for result in results:
             elif class_id == 7:
                 trucks += 1
 
-    # Save the highest number observed
+    # Store maximum number seen in any frame
     max_cars = max(max_cars, cars)
     max_motorcycles = max(max_motorcycles, motorcycles)
     max_buses = max(max_buses, buses)
     max_trucks = max(max_trucks, trucks)
 
 
-# Maximum traffic observed
+# ==========================================
+# 6. TOTAL VEHICLES
+# ==========================================
+
 max_total = (
     max_cars
     + max_motorcycles
@@ -69,7 +96,11 @@ max_total = (
     + max_trucks
 )
 
-# Determine traffic level
+
+# ==========================================
+# 7. TRAFFIC LEVEL
+# ==========================================
+
 if max_total <= 5:
     traffic_level = "LOW"
 
@@ -80,16 +111,68 @@ else:
     traffic_level = "HIGH"
 
 
-# Display result
+# ==========================================
+# 8. CREATE JSON
+# ==========================================
+
+event = {
+    "event_type": "traffic_density",
+    "timestamp": datetime.now().isoformat(),
+
+    "cars": max_cars,
+    "motorcycles": max_motorcycles,
+    "buses": max_buses,
+    "trucks": max_trucks,
+
+    "total_vehicles": max_total,
+    "traffic_level": traffic_level
+}
+
+
+# ==========================================
+# 9. SAVE JSON
+# ==========================================
+
+with open("ai/src/traffic_event.json", "w") as file:
+
+    json.dump(
+        event,
+        file,
+        indent=4
+    )
+
+
+# ==========================================
+# 10. FINAL RESULT
+# ==========================================
+
 print()
+print("AI Status   : COMPLETED")
+print()
+
 print("======================================")
 print("       TRAFFIC DENSITY RESULT")
 print("======================================")
+
 print("Maximum cars        :", max_cars)
 print("Maximum motorcycles :", max_motorcycles)
 print("Maximum buses       :", max_buses)
 print("Maximum trucks      :", max_trucks)
+
 print("--------------------------------------")
+
 print("Maximum vehicles    :", max_total)
 print("Traffic level       :", traffic_level)
+
+print("--------------------------------------")
+
+print("JSON saved to:")
+print("ai/src/traffic_event.json")
+
+print()
+print("Annotated video saved under:")
+print("runs/detect/")
+
+print("======================================")
+print("       AI TEST COMPLETED")
 print("======================================")

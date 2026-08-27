@@ -1,0 +1,656 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #070b12;
+  color: #f5f7fa;
+  font-family: "DM Sans", sans-serif;
+}
+
+.app {
+  width: min(1400px, 94%);
+  margin: auto;
+  padding: 32px 0 45px;
+}
+
+/* HEADER */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #1b2432;
+}
+
+.brand {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.brand-icon {
+  color: #35e0a1;
+  margin-right: 9px;
+}
+
+.topbar p {
+  margin-top: 5px;
+  color: #687588;
+  font-size: 13px;
+}
+
+.system-status {
+  border: 1px solid #1e3c34;
+  background: #0c1917;
+  color: #5ee8b0;
+  padding: 9px 15px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #35e0a1;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* INTRO */
+
+.intro {
+  padding: 48px 0 30px;
+}
+
+.eyebrow {
+  color: #687588;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.intro h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 42px;
+  margin: 9px 0;
+}
+
+.intro p {
+  color: #7c899b;
+}
+
+/* TOP GRID */
+
+.top-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 20px;
+  margin-bottom: 45px;
+}
+
+/* UPLOAD */
+
+.upload-card,
+.traffic-card,
+.vehicle-card,
+.total-card,
+.distribution-card {
+  background: #0c121c;
+  border: 1px solid #1b2635;
+  border-radius: 20px;
+}
+
+.upload-card {
+  min-height: 330px;
+  padding: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-style: dashed;
+  text-align: center;
+}
+
+.upload-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: #101c2a;
+  color: #48e6b0;
+  font-size: 26px;
+}
+
+.upload-card h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+}
+
+.upload-card p {
+  max-width: 430px;
+  margin: 10px auto 24px;
+  color: #718096;
+  line-height: 1.6;
+}
+
+.upload-button {
+  width: fit-content;
+  margin: 0 auto;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 24px;
+  background: #35d99c;
+  color: #06120d;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  transform: translateY(-2px);
+}
+
+.upload-hint {
+  margin-top: 13px;
+  color: #4f5c6e;
+  font-size: 11px;
+}
+
+/* TRAFFIC */
+
+.traffic-card {
+  min-height: 330px;
+  padding: 28px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  color: #758196;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.live {
+  color: #48e6b0;
+}
+
+.traffic-circle {
+  width: 170px;
+  height: 170px;
+  margin: 25px auto 15px;
+  border-radius: 50%;
+  border: 1px solid #276e59;
+  display: grid;
+  place-items: center;
+  background: #0c211b;
+  box-shadow: 0 0 45px rgba(53, 224, 161, 0.08);
+}
+
+.traffic-circle span {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 30px;
+  color: #4ee5ae;
+  font-weight: 700;
+}
+
+.traffic-caption {
+  text-align: center;
+  color: #728095;
+  font-size: 13px;
+}
+
+.analysis-time {
+  margin-top: 22px;
+  padding-top: 17px;
+  border-top: 1px solid #1a2431;
+  color: #556276;
+  font-size: 11px;
+}
+
+.analysis-time strong {
+  display: block;
+  color: #aeb8c7;
+  margin-top: 5px;
+  font-size: 12px;
+}
+
+/* VEHICLE SECTION */
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 17px;
+}
+
+.section-title h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  margin-top: 5px;
+}
+
+.detection-count {
+  color: #4ee5ae;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.vehicle-card {
+  padding: 25px;
+  transition: 0.2s ease;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-4px);
+  border-color: #314055;
+}
+
+.vehicle-icon {
+  font-size: 28px;
+  margin-bottom: 18px;
+}
+
+.vehicle-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+}
+
+.vehicle-label {
+  color: #657287;
+  margin-top: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* ANALYTICS */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 15px;
+}
+
+.total-card {
+  padding: 30px;
+}
+
+.total-number {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 92px;
+  line-height: 1;
+  margin: 25px 0 12px;
+}
+
+.total-card p {
+  color: #687588;
+  line-height: 1.6;
+  max-width: 340px;
+}
+
+.total-line {
+  height: 1px;
+  background: #1c2735;
+  margin: 28px 0;
+}
+
+.event-type {
+  color: #566276;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.event-type strong {
+  display: block;
+  color: #b4becb;
+  font-size: 12px;
+  margin-top: 5px;
+  letter-spacing: 0;
+}
+
+/* DISTRIBUTION */
+
+.distribution-card {
+  padding: 30px;
+}
+
+.section-heading h3 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 21px;
+  margin-top: 5px;
+  margin-bottom: 30px;
+}
+
+.distribution-row {
+  margin-bottom: 23px;
+}
+
+.distribution-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 9px;
+  font-size: 12px;
+}
+
+.distribution-info span {
+  color: #8793a5;
+}
+
+.distribution-info strong {
+  color: #d8dee7;
+}
+
+.progress {
+  width: 100%;
+  height: 7px;
+  background: #172131;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #35d99c;
+  border-radius: 20px;
+  transition: width 0.4s ease;
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  color: #3f4b5c;
+  font-size: 11px;
+  margin-top: 35px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .top-grid,
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .app {
+    width: 90%;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .system-status {
+    font-size: 9px;
+  }
+
+  .intro h1 {
+    font-size: 32px;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vehicle-card {
+    padding: 20px;
+  }
+}
+
+/* SELECTED VIDEO */
+
+.selected-video {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px auto 0;
+  padding: 12px 16px;
+  width: min(100%, 420px);
+  background: #111b28;
+  border: 1px solid #26364a;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.selected-video span {
+  font-size: 22px;
+}
+
+.selected-video strong {
+  display: block;
+  color: #dce4ee;
+  font-size: 13px;
+  word-break: break-all;
+}
+
+.selected-video small {
+  display: block;
+  margin-top: 3px;
+  color: #657287;
+}
+
+/* ANALYZE BUTTON */
+
+.analyze-button {
+  margin: 15px auto 0;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #35d99c;
+  color: #06120d;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.analyze-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* VIDEO PREVIEW */
+
+.video-preview {
+  width: 100%;
+  height: 240px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #05080d;
+  margin-top: 20px;
+}
+
+.empty-video {
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.empty-video div {
+  font-size: 42px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.empty-video p {
+  color: #9aa7b8;
+  margin-bottom: 5px;
+}
+
+.empty-video span {
+  color: #536174;
+  font-size: 12px;
+}
+
+/* RESULT */
+
+.traffic-result-card {
+  background: #0c121c;
+  border: 1px solid #1b2635;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 40px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-header h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 24px;
+  margin-top: 6px;
+}
+
+.analysis-complete {
+  color: #48e6b0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.traffic-result-content {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+  margin-top: 30px;
+}
+
+.result-info > span {
+  color: #657287;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.result-info strong {
+  display: block;
+  color: #4ee5ae;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 38px;
+  margin: 6px 0;
+}
+
+.result-info p {
+  color: #728095;
+  margin-bottom: 8px;
+}
+
+.result-info small {
+  color: #536174;
+}
+
+.welcome-message {
+  text-align: center;
+  padding: 60px 20px;
+  border: 1px solid #172333;
+  border-radius: 20px;
+  background: #0a111b;
+}
+
+.welcome-icon {
+  font-size: 28px;
+  color: #35d99c;
+  margin-bottom: 15px;
+}
+
+.welcome-message h2 {
+  font-family: "Space Grotesk", sans-serif;
+  margin-bottom: 8px;
+}
+
+.welcome-message p {
+  color: #657287;
+}
+
+/* PROCESSING */
+
+.processing-card {
+  text-align: center;
+  padding: 55px 20px;
+  border: 1px solid #1b2635;
+  border-radius: 20px;
+  background: #0c121c;
+}
+
+.spinner {
+  width: 45px;
+  height: 45px;
+  border: 3px solid #1c2a3a;
+  border-top: 3px solid #35d99c;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 1s linear infinite;
+}
+
+.processing-card h2 {
+  font-family: "Space Grotesk", sans-serif;
+  margin-bottom: 8px;
+}
+
+.processing-card p {
+  color: #687588;
+}
+
+.processing-steps {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 25px;
+  color: #5f7187;
+  font-size: 11px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .traffic-result-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .result-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .processing-steps {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+ai/venv/
+
+# YOLO model files
+*.pt
+
+# YOLO generated output
+runs/
+
+# Local traffic videos
+data/videos/
+
+# Temporary extracted test frame
+data/images/traffic1_first_frame.jpg

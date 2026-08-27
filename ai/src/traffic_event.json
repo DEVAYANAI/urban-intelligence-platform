@@ -1,0 +1,10 @@
+{
+    "event_type": "traffic_density",
+    "timestamp": "2026-08-26T23:48:22.782366",
+    "cars": 1,
+    "motorcycles": 4,
+    "buses": 0,
+    "trucks": 0,
+    "total_vehicles": 5,
+    "traffic_level": "LOW"
+}

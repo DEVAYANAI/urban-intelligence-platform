@@ -1,93 +1,67 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
-  const [traffic, setTraffic] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/traffic")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Backend request failed");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Backend traffic data:", data);
-      })
-      .catch((error) => {
-        console.error("Backend connection error:", error);
-      });
-  }, []);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Handle video selection
-  const handleVideoChange = (event) => {
+  // Select video
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
 
-    if (!file) {
-      return;
+    if (file) {
+      setSelectedFile(file);
+      setResult(null);
+      setError("");
     }
-
-    setSelectedVideo(file);
-    setTraffic(null);
-
-    // Create preview URL
-    const previewURL = URL.createObjectURL(file);
-    setVideoPreview(previewURL);
   };
 
-  // Temporary analysis function
-  // Later this will call your FastAPI backend
-
-  const handleAnalyze = async () => {
-    if (!selectedVideo) {
-      alert("Please select a video first.");
+  // Send video to FastAPI
+  const analyzeVideo = async () => {
+    if (!selectedFile) {
+      setError("Please select a traffic video first.");
       return;
     }
 
-    setIsAnalyzing(true);
+    setLoading(true);
+    setError("");
+    setResult(null);
+
+    const formData = new FormData();
+
+    formData.append("file", selectedFile);
 
     try {
-      const formData = new FormData();
-
-      formData.append("file", selectedVideo);
-
       const response = await fetch("http://127.0.0.1:8000/analyze-video", {
         method: "POST",
         body: formData,
       });
 
       if (!response.ok) {
-        throw new Error("Video analysis failed");
+        throw new Error("Video analysis failed.");
       }
 
-      const result = await response.json();
+      const data = await response.json();
 
-      console.log("REAL AI RESULT:", result);
-
-      setTraffic(result);
-    } catch (error) {
-      console.error("Analysis error:", error);
-      alert("Video analysis failed. Check the backend terminal.");
+      setResult(data);
+    } catch (err) {
+      setError(err.message);
     } finally {
-      setIsAnalyzing(false);
+      setLoading(false);
     }
   };
 
   return (
-    <main className="app">
-      {/* ================= HEADER ================= */}
+    <div className="app">
+      {/* HEADER */}
 
-      <header className="topbar">
+      <header className="header">
         <div>
-          <div className="brand">
-            <span className="brand-icon">◈</span>
-            SADHAK NETRA
-          </div>
+          <h1>URBAN INTELLIGENCE</h1>
 
-          <p>AI-Powered Road Intelligence</p>
+          <p>AI-Powered Traffic & Road Event Monitoring System</p>
         </div>
 
         <div className="system-status">
@@ -96,310 +70,220 @@ function App() {
         </div>
       </header>
 
-      {/* ================= INTRO ================= */}
+      {/* MAIN */}
 
-      <section className="intro">
-        <div>
-          <span className="eyebrow">TRAFFIC ANALYSIS</span>
+      <main className="main-container">
+        {/* HERO */}
 
-          <h1>Traffic Intelligence</h1>
+        <section className="hero">
+          <div className="hero-badge">AI TRAFFIC ANALYSIS</div>
 
-          <p>AI-powered vehicle detection and traffic density analysis.</p>
-        </div>
-      </section>
+          <h2>Intelligent Traffic Monitoring</h2>
 
-      {/* ================= UPLOAD + STATUS ================= */}
+          <p>
+            Upload traffic footage and let our AI analyze vehicle density and
+            possible road events.
+          </p>
+        </section>
 
-      <section className="top-grid">
         {/* UPLOAD CARD */}
 
-        <div className="upload-card">
-          <div className="upload-icon">↑</div>
+        <section className="upload-card">
+          <div className="upload-icon">📹</div>
 
-          <h2>Analyze Traffic Video</h2>
+          <h3>Upload Traffic Video</h3>
 
-          <p>Upload a road or traffic video to detect and analyze vehicles.</p>
+          <p>Select a video from a bus camera or traffic camera.</p>
 
-          {/* Hidden file input */}
+          <input type="file" accept="video/*" onChange={handleFileChange} />
 
-          <input
-            type="file"
-            accept="video/*"
-            id="video-upload"
-            hidden
-            onChange={handleVideoChange}
-          />
+          {selectedFile && (
+            <div className="selected-file">
+              <span>📁</span>
 
-          {/* Select button */}
-
-          <label htmlFor="video-upload" className="upload-button">
-            📁 Select Video
-          </label>
-
-          {/* Selected file */}
-
-          {selectedVideo && (
-            <div className="selected-video">
-              <span>🎥</span>
-
-              <div>
-                <strong>{selectedVideo.name}</strong>
-
-                <small>
-                  {(selectedVideo.size / (1024 * 1024)).toFixed(2)} MB
-                </small>
-              </div>
+              <span>{selectedFile.name}</span>
             </div>
           )}
 
-          {/* Analyze button */}
+          <button
+            className="analyze-btn"
+            onClick={analyzeVideo}
+            disabled={loading}
+          >
+            {loading ? "AI ANALYZING..." : "ANALYZE WITH AI"}
+          </button>
+        </section>
 
-          {selectedVideo && (
-            <button
-              className="analyze-button"
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-            >
-              {isAnalyzing ? "⏳ Analyzing..." : "▶ Analyze Video"}
-            </button>
-          )}
+        {/* ERROR */}
 
-          <span className="upload-hint">
-            MP4, AVI or MOV • Select a traffic video
-          </span>
-        </div>
+        {error && <div className="error-box">⚠ {error}</div>}
 
-        {/* VIDEO PREVIEW / STATUS CARD */}
+        {/* LOADING */}
 
-        <div className="traffic-card">
-          <div className="card-header">
-            <span>VIDEO PREVIEW</span>
+        {loading && (
+          <div className="loading-card">
+            <div className="loader"></div>
 
-            {selectedVideo && <span className="live">● READY</span>}
+            <h3>AI is analyzing your traffic video</h3>
+
+            <p>Detecting vehicles and analyzing road conditions...</p>
           </div>
+        )}
 
-          {videoPreview ? (
-            <video className="video-preview" src={videoPreview} controls />
-          ) : (
-            <div className="empty-video">
-              <div>🎥</div>
+        {/* RESULTS */}
 
-              <p>No video selected</p>
+        {result && (
+          <section className="results-section">
+            {/* RESULT HEADER */}
 
-              <span>Upload a traffic video to preview it</span>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ================= RESULTS ================= */}
-
-      {traffic && (
-        <>
-          {/* TRAFFIC STATUS */}
-
-          <section className="traffic-result-card">
-            <div className="result-header">
+            <div className="section-header">
               <div>
-                <span className="eyebrow">AI ANALYSIS RESULT</span>
+                <p className="section-label">AI ANALYSIS COMPLETE</p>
 
-                <h2>Traffic Status</h2>
+                <h2>Traffic Intelligence Report</h2>
               </div>
 
-              <span className="analysis-complete">✓ ANALYSIS COMPLETE</span>
-            </div>
-
-            <div className="traffic-result-content">
-              <div className="traffic-circle">
-                <span>{traffic.traffic_level}</span>
-              </div>
-
-              <div className="result-info">
-                <span>CURRENT TRAFFIC DENSITY</span>
-
-                <strong>{traffic.traffic_level}</strong>
-
-                <p>Based on {traffic.total_vehicles} detected vehicles.</p>
-
-                <small>
-                  Last analyzed: {new Date(traffic.timestamp).toLocaleString()}
-                </small>
+              <div
+                className={`traffic-badge ${result.traffic_level?.toLowerCase()}`}
+              >
+                {result.traffic_level} TRAFFIC
               </div>
             </div>
-          </section>
 
-          {/* VEHICLE DETECTION */}
+            {/* VEHICLE CARDS */}
 
-          <section>
-            <div className="section-title">
-              <div>
-                <span className="eyebrow">AI DETECTION</span>
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon">🚗</div>
 
-                <h2>Vehicle Detection</h2>
+                <p>Cars</p>
+
+                <h3>{result.cars}</h3>
               </div>
 
-              <span className="detection-count">
-                {traffic.total_vehicles} DETECTED
-              </span>
-            </div>
+              <div className="stat-card">
+                <div className="stat-icon">🏍️</div>
 
-            <div className="vehicle-grid">
-              <VehicleCard icon="🚗" number={traffic.cars} label="Cars" />
+                <p>Motorcycles</p>
 
-              <VehicleCard
-                icon="🏍️"
-                number={traffic.motorcycles}
-                label="Motorcycles"
-              />
-
-              <VehicleCard icon="🚌" number={traffic.buses} label="Buses" />
-
-              <VehicleCard icon="🚚" number={traffic.trucks} label="Trucks" />
-            </div>
-          </section>
-
-          {/* ANALYTICS */}
-
-          <section className="analytics-grid">
-            {/* TOTAL */}
-
-            <div className="total-card">
-              <span className="eyebrow">TOTAL VEHICLES</span>
-
-              <div className="total-number">
-                {String(traffic.total_vehicles).padStart(2, "0")}
+                <h3>{result.motorcycles}</h3>
               </div>
 
-              <p>Vehicles detected in the analyzed traffic scene.</p>
+              <div className="stat-card">
+                <div className="stat-icon">🚌</div>
 
-              <div className="total-line"></div>
+                <p>Buses</p>
 
-              <span className="event-type">
-                EVENT TYPE
-                <strong>Traffic Density</strong>
-              </span>
+                <h3>{result.buses}</h3>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-icon">🚛</div>
+
+                <p>Trucks</p>
+
+                <h3>{result.trucks}</h3>
+              </div>
             </div>
 
-            {/* DISTRIBUTION */}
+            {/* TRAFFIC SUMMARY */}
 
-            <div className="distribution-card">
-              <div className="section-heading">
+            <div className="summary-grid">
+              <div className="summary-card">
+                <p>TOTAL VEHICLES</p>
+
+                <h2>{result.total_vehicles}</h2>
+
+                <span>Maximum vehicles detected</span>
+              </div>
+
+              <div className="summary-card">
+                <p>TRAFFIC LEVEL</p>
+
+                <h2>{result.traffic_level}</h2>
+
+                <span>AI traffic density classification</span>
+              </div>
+
+              <div className="summary-card">
+                <p>ANALYSIS TIME</p>
+
+                <h2 className="time-text">
+                  {result.timestamp
+                    ? new Date(result.timestamp).toLocaleTimeString()
+                    : "--"}
+                </h2>
+
+                <span>AI processing timestamp</span>
+              </div>
+            </div>
+
+            {/* ROAD EVENT */}
+
+            <section
+              className={`road-event-card ${
+                result.road_event_detected ? "event-detected" : "event-clear"
+              }`}
+            >
+              <div className="road-event-header">
                 <div>
-                  <span className="eyebrow">BREAKDOWN</span>
+                  <p className="section-label">ROAD EVENT ANALYSIS</p>
 
-                  <h3>Vehicle Distribution</h3>
+                  <h2>🚨 Road Condition Intelligence</h2>
+                </div>
+
+                <div
+                  className={`event-status ${
+                    result.road_event_detected ? "detected" : "clear"
+                  }`}
+                >
+                  {result.road_event_detected ? "EVENT DETECTED" : "NO EVENT"}
                 </div>
               </div>
 
-              <Distribution
-                label="Cars"
-                value={traffic.cars}
-                total={traffic.total_vehicles}
-              />
+              <div className="road-event-grid">
+                <div className="event-info">
+                  <span>EVENT STATUS</span>
 
-              <Distribution
-                label="Motorcycles"
-                value={traffic.motorcycles}
-                total={traffic.total_vehicles}
-              />
+                  <h3>
+                    {result.road_event_detected
+                      ? "Detected"
+                      : "No Event Detected"}
+                  </h3>
+                </div>
 
-              <Distribution
-                label="Buses"
-                value={traffic.buses}
-                total={traffic.total_vehicles}
-              />
+                <div className="event-info">
+                  <span>EVENT TYPE</span>
 
-              <Distribution
-                label="Trucks"
-                value={traffic.trucks}
-                total={traffic.total_vehicles}
-              />
-            </div>
+                  <h3>
+                    {result.road_event_type ? result.road_event_type : "None"}
+                  </h3>
+                </div>
+              </div>
+
+              {/* ALERT MESSAGE */}
+
+              <div className="alert-box">
+                <div className="alert-icon">
+                  {result.road_event_detected ? "⚠️" : "✓"}
+                </div>
+
+                <div>
+                  <p>AI ROUTE ALERT</p>
+
+                  <h3>
+                    {result.alert_message || "No alert information available."}
+                  </h3>
+                </div>
+              </div>
+            </section>
           </section>
-        </>
-      )}
+        )}
+      </main>
 
-      {/* ================= INITIAL STATE ================= */}
+      {/* FOOTER */}
 
-      {!traffic && !isAnalyzing && !selectedVideo && (
-        <section className="welcome-message">
-          <div className="welcome-icon">✦</div>
-
-          <h2>Ready for Traffic Analysis</h2>
-
-          <p>
-            Upload a traffic video above to begin vehicle detection and traffic
-            analysis.
-          </p>
-        </section>
-      )}
-
-      {/* ================= ANALYZING ================= */}
-
-      {isAnalyzing && (
-        <section className="processing-card">
-          <div className="spinner"></div>
-
-          <h2>Analyzing Traffic Video</h2>
-
-          <p>AI is detecting and tracking vehicles...</p>
-
-          <div className="processing-steps">
-            <span>✓ Video uploaded</span>
-
-            <span>✓ YOLO detection</span>
-
-            <span>⏳ Vehicle analysis</span>
-          </div>
-        </section>
-      )}
-
-      {/* ================= FOOTER ================= */}
-
-      <footer>SADHAK NETRA • AI-Powered Road Intelligence</footer>
-    </main>
-  );
-}
-
-/* ================================================= */
-/* VEHICLE CARD                                     */
-/* ================================================= */
-
-function VehicleCard({ icon, number, label }) {
-  return (
-    <div className="vehicle-card">
-      <div className="vehicle-icon">{icon}</div>
-
-      <div className="vehicle-number">{String(number).padStart(2, "0")}</div>
-
-      <div className="vehicle-label">{label}</div>
-    </div>
-  );
-}
-
-/* ================================================= */
-/* DISTRIBUTION                                     */
-/* ================================================= */
-
-function Distribution({ label, value, total }) {
-  const percentage = total > 0 ? (value / total) * 100 : 0;
-
-  return (
-    <div className="distribution-row">
-      <div className="distribution-info">
-        <span>{label}</span>
-
-        <strong>{value}</strong>
-      </div>
-
-      <div className="progress">
-        <div
-          className="progress-fill"
-          style={{
-            width: `${percentage}%`,
-          }}
-        ></div>
-      </div>
+      <footer>Urban Intelligence Platform • AI Powered Monitoring</footer>
     </div>
   );
 }

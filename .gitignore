@@ -20,3 +20,8 @@ ai/venv/
 # YOLO generated files
 runs/
 
+# Uploaded videos
+backend/uploads/
+
+# Generated AI output
+ai/src/traffic_event.json
